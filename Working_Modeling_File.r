@@ -18,3 +18,11 @@ simple_ames <-
 
 simple_ames <- prep(simple_ames, training = ames_train)
 bake(simple_ames, new_data = NULL)
+
+ggplot(ames_train, aes(x = Gr_Liv_Area, y = 10^Sale_Price)) + 
+  geom_point(alpha = .2) + 
+  facet_wrap(~ Bldg_Type) + 
+  geom_smooth(method = lm, formula = y ~ x, se = FALSE, col = "red") + 
+  scale_x_log10() + 
+  scale_y_log10() + 
+  labs(x = "General Living Area", y = "Sale Price (USD)")
