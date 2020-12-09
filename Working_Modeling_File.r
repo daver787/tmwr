@@ -26,3 +26,23 @@ ggplot(ames_train, aes(x = Gr_Liv_Area, y = 10^Sale_Price)) +
   scale_x_log10() + 
   scale_y_log10() + 
   labs(x = "General Living Area", y = "Sale Price (USD)")
+
+
+#splines for non-linear data
+library(patchwork)
+library(splines)
+
+plot_smoother <- function(deg_free) {
+  ggplot(ames_train, aes(x = Latitude, y = Sale_Price)) + 
+    geom_point(alpha = .2) + 
+    scale_y_log10() +
+    geom_smooth(
+      method = lm,
+      formula = y ~ ns(x, df = deg_free),
+      col = "red",
+      se = FALSE
+    ) +
+    ggtitle(paste(deg_free, "Spline Terms"))
+}
+
+( plot_smoother(2) + plot_smoother(5) ) / ( plot_smoother(20) + plot_smoother(100) )
