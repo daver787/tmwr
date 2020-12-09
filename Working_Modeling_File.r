@@ -1,4 +1,6 @@
 library(tidymodels)
+library(patchwork)
+library(splines)
 data(ames)
 ames <- ames %>% mutate(Sale_Price = log10(Sale_Price))
 
@@ -9,11 +11,13 @@ ames_test  <-  testing(ames_split)
 
 
 simple_ames <- 
-  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
+  recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type+Latitude,
          data = ames_train) %>%
   step_log(Gr_Liv_Area, base = 10) %>% 
   step_other(Neighborhood, threshold = 0.01) %>% 
-  step_dummy(all_nominal())
+  step_dummy(all_nominal())%>%
+  step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
+  step_ns(Latitude, deg_free = 20)
 
 
 simple_ames <- prep(simple_ames, training = ames_train)
@@ -29,8 +33,7 @@ ggplot(ames_train, aes(x = Gr_Liv_Area, y = 10^Sale_Price)) +
 
 
 #splines for non-linear data
-library(patchwork)
-library(splines)
+
 
 plot_smoother <- function(deg_free) {
   ggplot(ames_train, aes(x = Latitude, y = Sale_Price)) + 
