@@ -21,3 +21,7 @@ ames_rec <-
 
 lm_model <- linear_reg() %>% set_engine("lm")
 
+lm_wflow <- 
+  workflow() %>% 
+  add_model(lm_model)
+
