@@ -18,3 +18,6 @@ ames_rec <-
   step_dummy(all_nominal())%>%
   step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
   step_ns(Latitude,Longitude, deg_free = 20)
+
+lm_model <- linear_reg() %>% set_engine("lm")
+
