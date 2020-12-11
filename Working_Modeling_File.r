@@ -27,15 +27,3 @@ lm_wflow <-
   add_recipe(ames_rec)
 
 lm_fit <- fit(lm_wflow,ames_train)
-predict(lm_fit, ames_test %>% slice(1:3))
-
-lm_fit %>% 
-  pull_workflow_prepped_recipe() %>% 
-  tidy()
-
-lm_fit %>% 
-  # This returns the parsnip object:
-  pull_workflow_fit() %>% 
-  # Now tidy the linear model object:
-  tidy() %>% 
-  slice(1:5)
