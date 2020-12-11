@@ -19,6 +19,7 @@ ames_rec <-
   step_interact( ~ Gr_Liv_Area:starts_with("Bldg_Type_") ) %>% 
   step_ns(Latitude,Longitude, deg_free = 20)
 
+#fit a linear regression model
 lm_model <- linear_reg() %>% set_engine("lm")
 
 lm_wflow <- 
@@ -27,3 +28,15 @@ lm_wflow <-
   add_recipe(ames_rec)
 
 lm_fit <- fit(lm_wflow,ames_train)
+
+
+# fit a random forest model
+rf_model <- rand_forest(trees = 1000) %>%
+  set_engine("ranger") %>%
+  set_mode("regression")
+
+rf_wflow <- workflow() %>%
+  add_formula(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + Latitude + Longitude) %>%
+  add_model(rf_model)
+
+rf_fit <- fit(rf_wflow,data = ames_train)
