@@ -39,4 +39,10 @@ rf_wflow <- workflow() %>%
   add_formula(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type + Latitude + Longitude) %>%
   add_model(rf_model)
 
-rf_fit <- fit(rf_wflow,data = ames_train)
+set.seed(55)
+ames_folds <- vfold_cv(ames_train, v = 10)
+
+keep_pred <- control_resamples(save_pred = TRUE)
+
+set.seed(130)
+rf_res <- rf_wflow %>% fit_resamples(resamples = ames_folds, control = keep_pred)
