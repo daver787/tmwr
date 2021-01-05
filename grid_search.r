@@ -36,8 +36,10 @@ mlp_param <-
     num_comp = num_comp(c(0, 40))
   )
 
-#perform grid searc
+#perform grid search
 roc_res <- metric_set(roc_auc)
+
+
 set.seed(99)
 
 mlp_reg_tune <-
@@ -70,3 +72,25 @@ autoplot(mlp_sfd_tune)
 
 #show the best combination with more exhaustive approach
 show_best(mlp_sfd_tune) %>% select(-.estimator)
+
+
+#use chosen set of hyperparameters in workflow with the finalize function
+logistic_param <- 
+  tibble(
+    num_comp = 0,
+    epochs = 125,
+    hidden_units = 1,
+    penalty = 1
+  )
+
+final_mlp_wflow <- 
+  mlp_wflow %>% 
+  finalize_workflow(logistic_param)
+
+
+
+
+#fit the model on whole dataset using the finalized workflow
+final_mlp_fit <- 
+  final_mlp_wflow %>% 
+  fit(cells)
