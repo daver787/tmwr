@@ -94,3 +94,20 @@ final_mlp_wflow <-
 final_mlp_fit <- 
   final_mlp_wflow %>% 
   fit(cells)
+
+#racing method to pick best model hyperparameters
+library(finetune)
+
+set.seed(99)
+mlp_sfd_race <-
+  mlp_wflow %>%
+  tune_race_anova(
+    cell_folds,
+    grid = 20,
+    param_info = mlp_param,
+    metrics = roc_res,
+    control = control_race(verbose_elim = TRUE)
+  )
+
+#show the winners of the race
+show_best(mlp_sfd_race, n = 10)
